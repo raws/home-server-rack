@@ -1,4 +1,5 @@
 // Parameters
+rack_height = 27;
 enclosure_width = 44.5;
 enclosure_depth = 31;
 profile_base_dimension = 1.5;
@@ -52,6 +53,14 @@ module server_rack_part_e() {
   extrude_8020("1545-S", length);
 }
 
+module server_rack_part_g() {
+  length = rack_height;
+  
+  color("SlateBlue")
+  translate([profile_half_dimension, profile_half_dimension, (length / 2)])
+  extrude_8020("1515-LS", length);
+}
+
 // Front Vent Base
 union() {
   server_rack_part_c();
@@ -72,5 +81,28 @@ union() {
   
   translate([(enclosure_width / 2 - (profile_base_dimension * 3 / 2)), (profile_base_dimension * 5), 0]) {
     server_rack_part_e();
+  }
+}
+
+// Legs
+translate([0, 0, profile_base_dimension]) {
+  union() {
+    evenly_spaced_offsets = [
+      0,
+      (enclosure_half_width - profile_half_dimension),
+      (enclosure_width - profile_base_dimension)
+    ];
+    
+    // Rear
+    translate([0, (enclosure_depth - profile_base_dimension), 0]) {
+      for (x = evenly_spaced_offsets) {
+        translate([x, 0, 0]) server_rack_part_g();
+      }
+    }
+    
+    // Front
+    for (x = evenly_spaced_offsets) {
+      translate([x, 0, 0]) server_rack_part_g();
+    }
   }
 }
