@@ -1,6 +1,8 @@
 // Parameters
+rack_width = 20.25;
+rack_depth = 25;
 rack_height = 27;
-enclosure_width = 44.5;
+enclosure_width = 45;
 enclosure_depth = 31;
 profile_base_dimension = 1.5;
 
@@ -11,6 +13,43 @@ profile_half_dimension = profile_base_dimension / 2;
 module extrude_8020(profile, length) {
   linear_extrude(height = length, center = true) {
     import(str("vendor/8020/", profile, ".dxf"));
+  }
+}
+
+module server_rack() {
+  rack_frame_dimension = 1.5;
+  fudge_factor = 1;
+
+  color("Gray", alpha = 0.75)
+  difference() {
+    cube([rack_width, rack_depth, rack_height]);
+    
+    // Cut out front and back
+    translate([rack_frame_dimension, -(fudge_factor / 2), rack_frame_dimension]) {
+      cube([
+        (rack_width - (rack_frame_dimension * 2)),
+        (rack_depth + fudge_factor),
+        (rack_height - (rack_frame_dimension * 2))
+      ]);
+    }
+    
+    // Cut out left and right
+    translate([-(fudge_factor / 2), rack_frame_dimension, rack_frame_dimension]) {
+      cube([
+        (rack_width + fudge_factor),
+        (rack_depth - (rack_frame_dimension * 2)),
+        (rack_height - (rack_frame_dimension * 2))
+      ]);
+    }
+    
+    // Cut out top and bottom
+    translate([rack_frame_dimension, rack_frame_dimension, -(fudge_factor / 2)]) {
+      cube([
+        (rack_width - (rack_frame_dimension * 2)),
+        (rack_depth - (rack_frame_dimension * 2)),
+        (rack_height + fudge_factor)
+      ]);
+    }
   }
 }
 
@@ -105,4 +144,10 @@ translate([0, 0, profile_base_dimension]) {
       translate([x, 0, 0]) server_rack_part_g();
     }
   }
+}
+
+// Racks
+translate([0, (profile_base_dimension * 3), profile_base_dimension]) {
+  translate([profile_base_dimension, 0, 0]) server_rack();
+  translate([(enclosure_width - rack_width - profile_base_dimension), 0, 0]) server_rack();
 }
