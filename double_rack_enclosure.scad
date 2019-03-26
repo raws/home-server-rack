@@ -6,12 +6,14 @@ front_vent_depth = 3;
 profile_base_dimension = 1.5;
 enclosure_width = 45;
 enclosure_depth = rack_depth + front_vent_depth + (profile_base_dimension * 2);
+enclosure_height = rack_height + (profile_base_dimension * 2);
 
 // Derivatives
 enclosure_half_width = enclosure_width / 2;
 profile_half_dimension = profile_base_dimension / 2;
 parts_b_and_e_length = rack_depth - (profile_base_dimension * 2);
 rack_base_y_offset = profile_base_dimension + front_vent_depth;
+top_frame_z_offset = enclosure_height - profile_base_dimension;
 
 module extrude_8020(profile, length) {
   linear_extrude(height = length, center = true) {
@@ -110,8 +112,17 @@ module server_rack_part_e() {
 module server_rack_part_g() {
   length = rack_height;
   
-  color("SlateBlue")
+  color("MediumSlateBlue")
   translate([profile_half_dimension, profile_half_dimension, (length / 2)])
+  extrude_8020("1515-LS", length);
+}
+
+module server_rack_part_i() {
+  length = enclosure_depth - (profile_base_dimension * 2);
+  
+  color("LightCoral")
+  translate([profile_half_dimension, (length / 2), profile_half_dimension])
+  rotate([90, 0, 0])
   extrude_8020("1515-LS", length);
 }
 
@@ -173,4 +184,18 @@ fudge_factor = 0.01; // To eliminate z-fighting
 translate([0, rack_base_y_offset, profile_base_dimension + fudge_factor]) {
   translate([profile_base_dimension, 0, 0]) server_rack();
   translate([(enclosure_width - rack_width - profile_base_dimension), 0, 0]) server_rack();
+}
+
+// Top Frame
+translate([0, 0, top_frame_z_offset]) {
+  union() {
+    server_rack_part_c();
+    translate([0, (enclosure_depth - profile_base_dimension), 0]) server_rack_part_c();
+    
+    translate([0, profile_base_dimension, 0]) {
+      for (x = [0, (enclosure_width / 2 - profile_half_dimension), (enclosure_width - profile_base_dimension)]) {
+        translate([x, 0, 0]) server_rack_part_i();
+      }
+    }
+  }
 }
