@@ -1,9 +1,16 @@
-// Parameters
 rack_width = 20.25;
 rack_depth = 25;
 rack_height = 27;
+
 front_vent_depth = 3;
+
+door_hinge_gap = 0.063;
+door_handle_gap = 0.25;
+door_top_gap = door_handle_gap;
+door_bottom_gap = door_handle_gap;
+
 profile_base_dimension = 1.5;
+
 enclosure_width = 45;
 enclosure_depth = rack_depth + front_vent_depth + (profile_base_dimension * 2);
 enclosure_height = rack_height + (profile_base_dimension * 2);
@@ -14,6 +21,10 @@ profile_half_dimension = profile_base_dimension / 2;
 parts_b_and_e_length = rack_depth - (profile_base_dimension * 2);
 rack_base_y_offset = profile_base_dimension + front_vent_depth;
 top_frame_z_offset = enclosure_height - profile_base_dimension;
+total_horizontal_door_gap = door_handle_gap + door_hinge_gap;
+total_vertical_door_gap = door_top_gap + door_bottom_gap;
+door_width = rack_width - total_horizontal_door_gap;
+door_height = enclosure_height - (profile_base_dimension * 2) - total_vertical_door_gap;
 
 module extrude_8020(profile, length) {
   linear_extrude(height = length, center = true) {
@@ -126,6 +137,35 @@ module server_rack_part_i() {
   extrude_8020("1515-LS", length);
 }
 
+module server_rack_part_j() {
+  length = rack_height - total_vertical_door_gap;
+  
+  translate([profile_half_dimension, profile_half_dimension, (length / 2)])
+  extrude_8020("1515-LS", length);
+}
+
+module server_rack_part_k() {
+  length = rack_width - total_horizontal_door_gap - (profile_base_dimension * 2);
+  
+  translate([(length / 2), profile_half_dimension, profile_half_dimension])
+  rotate([0, 90, 0])
+  extrude_8020("1515-LS", length);
+}
+
+module server_rack_door() {
+  top_bottom_frame_x_offset = profile_base_dimension;
+  bottom_frame_z_offset = door_height - profile_base_dimension;
+  right_frame_x_offset = door_width - profile_base_dimension;
+  
+  // Frame top and bottom
+  translate([top_bottom_frame_x_offset, 0, bottom_frame_z_offset]) server_rack_part_k();
+  translate([top_bottom_frame_x_offset, 0, 0]) server_rack_part_k();
+  
+  // Frame left and right
+  server_rack_part_j();
+  translate([right_frame_x_offset, 0, 0]) server_rack_part_j();
+}
+
 // Front Vent Base
 union() {
   server_rack_part_c();
@@ -199,3 +239,8 @@ translate([0, 0, top_frame_z_offset]) {
     }
   }
 }
+
+// Front Doors
+door_x_offset = profile_base_dimension + door_hinge_gap;
+door_z_offset = profile_base_dimension + door_bottom_gap;
+translate([door_x_offset, 0, door_z_offset]) server_rack_door();
