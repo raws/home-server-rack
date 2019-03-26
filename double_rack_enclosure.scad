@@ -18,9 +18,10 @@ module extrude_8020(profile, length) {
 
 module server_rack() {
   rack_frame_dimension = 1.5;
-  fudge_factor = 1;
+  wall_thickness = 0.125;
+  fudge_factor = 0.01;
 
-  color("Gray", alpha = 0.75)
+  color("Gray", alpha = 1)
   difference() {
     cube([rack_width, rack_depth, rack_height]);
     
@@ -48,6 +49,15 @@ module server_rack() {
         (rack_width - (rack_frame_dimension * 2)),
         (rack_depth - (rack_frame_dimension * 2)),
         (rack_height + fudge_factor)
+      ]);
+    }
+    
+    // Cut interior to emulate L-profile frame
+    translate([wall_thickness, wall_thickness, wall_thickness]) {
+      cube([
+        (rack_width - (wall_thickness * 2)),
+        (rack_depth - (wall_thickness * 2)),
+        (rack_height - (wall_thickness * 2))
       ]);
     }
   }
@@ -147,7 +157,8 @@ translate([0, 0, profile_base_dimension]) {
 }
 
 // Racks
-translate([0, (profile_base_dimension * 3), profile_base_dimension]) {
+fudge_factor = 0.01; // To eliminate z-fighting
+translate([0, (profile_base_dimension * 3), profile_base_dimension + fudge_factor]) {
   translate([profile_base_dimension, 0, 0]) server_rack();
   translate([(enclosure_width - rack_width - profile_base_dimension), 0, 0]) server_rack();
 }
