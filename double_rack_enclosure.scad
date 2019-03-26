@@ -19,7 +19,7 @@ module extrude_8020(profile, length) {
 module server_rack() {
   rack_frame_dimension = 1.5;
   wall_thickness = 0.125;
-  fudge_factor = 0.01;
+  fudge_factor = 0.01; // To eliminate z-fighting
 
   color("Gray", alpha = 1)
   difference() {
@@ -70,7 +70,7 @@ module server_rack_part_a() {
 }
 
 module server_rack_part_b() {
-  length = enclosure_depth - (profile_base_dimension * 7);
+  length = enclosure_depth - (profile_base_dimension * 6);
   
   color("DodgerBlue")
   translate([profile_base_dimension, (length / 2), profile_half_dimension])
@@ -93,7 +93,7 @@ module server_rack_part_d() {
 }
 
 module server_rack_part_e() {
-  length = enclosure_depth - (profile_base_dimension * 7);
+  length = enclosure_depth - (profile_base_dimension * 6);
   width = profile_base_dimension * 3;
   
   color("Tomato")
@@ -121,14 +121,14 @@ union() {
 
 // Rack Base
 union() {
-  translate([0, (profile_base_dimension * 3), 0]) server_rack_part_a();
+  translate([0, (profile_base_dimension * 3), 0]) server_rack_part_c();
   translate([0, (enclosure_depth - (profile_base_dimension * 2)), 0]) server_rack_part_a();
   
   for (x = [(profile_base_dimension * 2), enclosure_width]) {
-    translate([(x - profile_base_dimension * 2), (profile_base_dimension * 5), 0]) server_rack_part_b();
+    translate([(x - profile_base_dimension * 2), (profile_base_dimension * 4), 0]) server_rack_part_b();
   }
   
-  translate([(enclosure_width / 2 - (profile_base_dimension * 3 / 2)), (profile_base_dimension * 5), 0]) {
+  translate([(enclosure_width / 2 - (profile_base_dimension * 3 / 2)), (profile_base_dimension * 4), 0]) {
     server_rack_part_e();
   }
 }
