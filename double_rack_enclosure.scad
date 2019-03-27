@@ -115,12 +115,13 @@ module server_rack_part_e() {
 }
 
 module server_rack_part_g() {
-  profile = "1515-LS";
+  profile = "1530-LS";
   length = rack_height;
   echo("G", profile, length);
   
   color("MediumSlateBlue")
-  translate([profile_half_dimension, profile_half_dimension, (length / 2)])
+  translate([profile_half_dimension, profile_base_dimension, (length / 2)])
+  rotate([0, 0, 90])
   extrude_8020(profile, length);
 }
 
@@ -221,7 +222,7 @@ translate([0, 0, profile_base_dimension]) {
     ];
     
     // Rear
-    rear_legs_y_offset = enclosure_depth - profile_base_dimension;
+    rear_legs_y_offset = enclosure_depth - (profile_base_dimension * 2);
     translate([0, rear_legs_y_offset, 0]) {
       for (x = evenly_spaced_offsets) {
         translate([x, 0, 0]) server_rack_part_g();
