@@ -166,6 +166,14 @@ module server_rack_door() {
   translate([right_frame_x_offset, 0, 0]) server_rack_part_j();
 }
 
+module server_rack_front_doors() {
+  door_z_offset = profile_base_dimension + door_bottom_gap;
+  left_door_x_offset = profile_base_dimension + door_hinge_gap;
+  right_door_x_offset = enclosure_width - profile_base_dimension - door_hinge_gap;
+  translate([left_door_x_offset, 0, door_z_offset]) server_rack_door();
+  translate([right_door_x_offset, 0, door_z_offset]) mirror([1, 0, 0]) server_rack_door();
+}
+
 // Front Vent Base
 union() {
   server_rack_part_c();
@@ -240,7 +248,8 @@ translate([0, 0, top_frame_z_offset]) {
   }
 }
 
-// Front Doors
-door_x_offset = profile_base_dimension + door_hinge_gap;
-door_z_offset = profile_base_dimension + door_bottom_gap;
-translate([door_x_offset, 0, door_z_offset]) server_rack_door();
+// Doors
+union() {
+  server_rack_front_doors();
+  translate([0, (enclosure_depth - profile_base_dimension), 0]) server_rack_front_doors();
+}
