@@ -1,4 +1,4 @@
-rack_width = 20.25;
+rack_width = 20.5;
 rack_depth = 25;
 rack_height = 27;
 
@@ -12,7 +12,7 @@ door_bottom_gap = door_handle_gap;
 profile_base_dimension = 1.5;
 panel_thickness = 0.25;
 
-enclosure_width = 45;
+enclosure_width = (rack_width * 2) + (profile_base_dimension * 3);
 enclosure_depth = rack_depth + front_vent_depth + (profile_base_dimension * 2);
 enclosure_height = rack_height + (profile_base_dimension * 2);
 
