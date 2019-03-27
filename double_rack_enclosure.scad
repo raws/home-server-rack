@@ -81,70 +81,88 @@ module server_rack() {
 }
 
 module server_rack_part_b() {
+  profile = "1530-LS";
   length = parts_b_and_e_length;
+  echo("B", profile, length);
   
   color("DodgerBlue")
   translate([profile_base_dimension, (length / 2), profile_half_dimension])
   rotate([90, 0, 0])
-  extrude_8020("1530-LS", length);
+  extrude_8020(profile, length);
 }
 
 module server_rack_part_c() {
+  profile = "1515-LS";
+  length = enclosure_width;
+  echo("C", profile, length);
+
   color("LimeGreen")
   translate([enclosure_half_width, profile_half_dimension, profile_half_dimension])
   rotate([0, 90, 0])
-  extrude_8020("1515-LS", enclosure_width);
+  extrude_8020(profile, length);
 }
 
 module server_rack_part_e() {
+  profile = "1545-S";
   length = parts_b_and_e_length;
   width = profile_base_dimension * 3;
+  echo("E", profile, length);
   
   color("Tomato")
   translate([(width / 2), (length / 2), profile_half_dimension])
   rotate([90, 0, 0])
-  extrude_8020("1545-S", length);
+  extrude_8020(profile, length);
 }
 
 module server_rack_part_g() {
+  profile = "1515-LS";
   length = rack_height;
+  echo("G", profile, length);
   
   color("MediumSlateBlue")
   translate([profile_half_dimension, profile_half_dimension, (length / 2)])
-  extrude_8020("1515-LS", length);
+  extrude_8020(profile, length);
 }
 
 module server_rack_part_i() {
+  profile = "1515-LS";
   length = enclosure_depth - (profile_base_dimension * 2);
+  echo("I", profile, length);
   
   color("LightCoral")
   translate([profile_half_dimension, (length / 2), profile_half_dimension])
   rotate([90, 0, 0])
-  extrude_8020("1515-LS", length);
+  extrude_8020(profile, length);
 }
 
 module server_rack_part_j() {
+  profile = "1515-LS";
   length = rack_height - total_vertical_door_gap;
+  echo("J", profile, length);
   
   translate([profile_half_dimension, profile_half_dimension, (length / 2)])
-  extrude_8020("1515-LS", length);
+  extrude_8020(profile, length);
 }
 
 module server_rack_part_k() {
+  profile = "1515-LS";
   length = rack_width - total_horizontal_door_gap - (profile_base_dimension * 2);
+  echo("K", profile, length);
   
   translate([(length / 2), profile_half_dimension, profile_half_dimension])
   rotate([0, 90, 0])
-  extrude_8020("1515-LS", length);
+  extrude_8020(profile, length);
 }
 
 module server_rack_part_q() {
+  profile = "1515-LS";
   length = part_q_length;
+  echo("Q", profile, length);
 
   color("Violet")
   translate([(length / 2), profile_half_dimension, profile_half_dimension])
   rotate([0, 90, 0])
-  extrude_8020("1515-LS", length);
+  extrude_8020(profile, length);
 }
 
 module server_rack_door() {
