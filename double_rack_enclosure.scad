@@ -18,8 +18,9 @@ enclosure_height = rack_height + (profile_base_dimension * 2);
 // Derivatives
 enclosure_half_width = enclosure_width / 2;
 profile_half_dimension = profile_base_dimension / 2;
-parts_b_and_e_length = rack_depth - (profile_base_dimension * 2);
-rack_base_y_offset = profile_base_dimension + front_vent_depth;
+parts_b_and_e_length = enclosure_depth - (profile_base_dimension * 3);
+part_q_length = (enclosure_width - (profile_base_dimension * 7)) / 2;
+rack_y_offset = profile_base_dimension + front_vent_depth;
 top_frame_z_offset = enclosure_height - profile_base_dimension;
 total_horizontal_door_gap = door_handle_gap + door_hinge_gap;
 total_vertical_door_gap = door_top_gap + door_bottom_gap;
@@ -101,15 +102,6 @@ module server_rack_part_c() {
   extrude_8020("1515-LS", enclosure_width);
 }
 
-module server_rack_part_d() {
-  length = front_vent_depth;
-  
-  color("Violet")
-  translate([profile_half_dimension, (length / 2), profile_half_dimension])
-  rotate([0, 90, 90])
-  extrude_8020("1515-LS", length);
-}
-
 module server_rack_part_e() {
   length = parts_b_and_e_length;
   width = profile_base_dimension * 3;
@@ -152,6 +144,15 @@ module server_rack_part_k() {
   extrude_8020("1515-LS", length);
 }
 
+module server_rack_part_q() {
+  length = part_q_length;
+
+  color("Violet")
+  translate([(length / 2), profile_half_dimension, profile_half_dimension])
+  rotate([0, 90, 0])
+  extrude_8020("1515-LS", length);
+}
+
 module server_rack_door() {
   top_bottom_frame_x_offset = profile_base_dimension;
   bottom_frame_z_offset = door_height - profile_base_dimension;
@@ -174,33 +175,28 @@ module server_rack_front_doors() {
   translate([right_door_x_offset, 0, door_z_offset]) mirror([1, 0, 0]) server_rack_door();
 }
 
-// Front Vent Base
+// Rack Base
 union() {
   server_rack_part_c();
-  
-  for (x = [profile_base_dimension, (enclosure_half_width + profile_half_dimension), enclosure_width]) {
-    translate([(x - profile_base_dimension), profile_base_dimension, 0]) server_rack_part_d();
-  }
-}
 
-// Rack Base
-translate([0, rack_base_y_offset, 0]) {
-  union() {
-    parts_b_and_e_y_offset = profile_base_dimension;
-    part_a_y_offset = parts_b_and_e_y_offset + parts_b_and_e_length;
-    
-    server_rack_part_c();
-    
-    for (x = [(profile_base_dimension * 2), enclosure_width]) {
-      translate([(x - profile_base_dimension * 2), parts_b_and_e_y_offset, 0]) server_rack_part_b();
-    }
-    
-    translate([(enclosure_width / 2 - (profile_base_dimension * 3 / 2)), parts_b_and_e_y_offset, 0]) {
-      server_rack_part_e();
-    }
-    
-    translate([0, part_a_y_offset, 0]) server_rack_part_a();
+  parts_b_and_e_y_offset = profile_base_dimension;
+  part_a_y_offset = parts_b_and_e_y_offset + parts_b_and_e_length;
+
+  for (x = [(profile_base_dimension * 2), enclosure_width]) {
+    translate([(x - profile_base_dimension * 2), parts_b_and_e_y_offset, 0]) server_rack_part_b();
   }
+
+  translate([(enclosure_width / 2 - (profile_base_dimension * 3 / 2)), parts_b_and_e_y_offset, 0]) {
+    server_rack_part_e();
+  }
+
+  part_q_left_x_offset = profile_base_dimension * 2;
+  part_q_right_x_offset = enclosure_width - (profile_base_dimension * 2) - part_q_length;
+  part_q_y_offset = profile_base_dimension + front_vent_depth;
+  translate([part_q_left_x_offset, part_q_y_offset, 0]) server_rack_part_q();
+  translate([part_q_right_x_offset, part_q_y_offset, 0]) server_rack_part_q();
+
+  translate([0, part_a_y_offset, 0]) server_rack_part_a();
 }
 
 // Legs
@@ -229,7 +225,7 @@ translate([0, 0, profile_base_dimension]) {
 
 // Racks
 fudge_factor = 0.01; // To eliminate z-fighting
-translate([0, rack_base_y_offset, profile_base_dimension + fudge_factor]) {
+translate([0, rack_y_offset, profile_base_dimension + fudge_factor]) {
   translate([profile_base_dimension, 0, 0]) server_rack();
   translate([(enclosure_width - rack_width - profile_base_dimension), 0, 0]) server_rack();
 }
