@@ -109,7 +109,7 @@ module server_rack_part_i() {
 
 module server_rack_part_j() {
   profile = "1515-LS";
-  length = rack_height - total_vertical_door_gap;
+  length = rack_height - total_vertical_door_gap - (profile_base_dimension * 2);
   echo("J", profile, length);
 
   translate([profile_half_dimension, profile_half_dimension, (length / 2)])
@@ -118,7 +118,7 @@ module server_rack_part_j() {
 
 module server_rack_part_k() {
   profile = "1515-LS";
-  length = rack_width - total_horizontal_door_gap - (profile_base_dimension * 2);
+  length = rack_width - total_horizontal_door_gap;
   echo("K", profile, length);
 
   translate([(length / 2), profile_half_dimension, profile_half_dimension])
@@ -138,17 +138,19 @@ module server_rack_part_q() {
 }
 
 module server_rack_door() {
-  top_bottom_frame_x_offset = profile_base_dimension;
+  side_frames_z_offset = profile_base_dimension;
   bottom_frame_z_offset = door_height - profile_base_dimension;
   right_frame_x_offset = door_width - profile_base_dimension;
 
-  // Frame top and bottom
-  translate([top_bottom_frame_x_offset, 0, bottom_frame_z_offset]) server_rack_part_k();
-  translate([top_bottom_frame_x_offset, 0, 0]) server_rack_part_k();
+  // Top and bottom frames
+  translate([0, 0, bottom_frame_z_offset]) server_rack_part_k();
+  server_rack_part_k();
 
-  // Frame left and right
-  server_rack_part_j();
-  translate([right_frame_x_offset, 0, 0]) server_rack_part_j();
+  // Side frames
+  translate([0, 0, side_frames_z_offset]) {
+    server_rack_part_j();
+    translate([right_frame_x_offset, 0, 0]) server_rack_part_j();
+  }
 }
 
 module server_rack_front_doors() {
